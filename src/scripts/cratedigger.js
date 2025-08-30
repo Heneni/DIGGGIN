@@ -560,8 +560,9 @@ function initScene() {
   CameraManager.init(canvasWidth / canvasHeight);
   camera = CameraManager.getCamera();
 
-  woodTexture = THREE.ImageUtils.loadTexture(Constants.crateTexture);
-  woodTexture.anisotropy = renderer.getMaxAnisotropy();
+  const textureLoader = new THREE.TextureLoader();
+  woodTexture = textureLoader.load(Constants.crateTexture);
+  woodTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
   woodMaterial = new THREE.MeshLambertMaterial({
     map: woodTexture,
   });

@@ -47,7 +47,7 @@ export default class Record {
     if (this.state !== 'shown') {
 
       this.state = 'shown';
-      this.absolutePosition.setFromMatrixPosition(this.mesh.matrixWorld);
+      this.mesh.getWorldPosition(this.absolutePosition);
 
       this.positionTween = new TWEEN.Tween(this.mesh.position)
         .to({
