@@ -1,0 +1,34 @@
+{
+  "name": "digggin-cratedigger",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Modern cratedigger experience for music and artwork discovery",
+  "keywords": ["music", "artwork", "three.js", "visualization", "cratedigger"],
+  "author": "Heneni <mark@heneniart.com>",
+  "license": "MIT",
+  "homepage": "https://heneni.github.io/DIGGGIN",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Heneni/DIGGGIN.git"
+  },
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "clean": "rm -rf dist",
+    "lint": "echo 'No linting configured'",
+    "test": "echo 'No tests configured'"
+  },
+  "devDependencies": {
+    "vite": "^7.1.2"
+  },
+  "dependencies": {
+    "papaparse": "^5.5.3",
+    "three": "^0.179.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}
