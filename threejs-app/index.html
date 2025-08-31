@@ -9,7 +9,58 @@
     <!-- Styles -->
     <link rel="stylesheet" href="styles/main.css">
     
-    <!-- Three.js -->
+    <!-- Note: Three.js CDN may be blocked in some environments -->
+    <!-- For development, we'll create a fallback implementation -->
+    <script>
+        // Simple fallback for blocked CDN
+        if (typeof THREE === 'undefined') {
+            console.warn('Three.js CDN blocked, creating minimal fallback for demo');
+            window.THREE = {
+                _isFallback: true, // Mark as fallback
+                Scene: function() { this.children = []; this.add = function() {}; },
+                PerspectiveCamera: function() {},
+                WebGLRenderer: function() { 
+                    this.domElement = document.createElement('canvas');
+                    this.setSize = function() {};
+                    this.setPixelRatio = function() {};
+                    this.render = function() {};
+                    this.dispose = function() {};
+                    this.shadowMap = { enabled: false };
+                },
+                OrbitControls: function() { 
+                    this.enableDamping = false;
+                    this.update = function() {};
+                    this.dispose = function() {};
+                },
+                Vector2: function() {},
+                Vector3: function(x, y, z) { this.x = x || 0; this.y = y || 0; this.z = z || 0; },
+                Color: function() {},
+                Fog: function() {},
+                AmbientLight: function() {},
+                DirectionalLight: function() {},
+                PointLight: function() {},
+                PlaneGeometry: function() {},
+                BoxGeometry: function() {},
+                CylinderGeometry: function() {},
+                MeshLambertMaterial: function() {},
+                Mesh: function() {},
+                Group: function() { 
+                    this.children = [];
+                    this.userData = {};
+                    this.position = new THREE.Vector3();
+                    this.scale = { set: function() {} };
+                    this.add = function() {};
+                },
+                GridHelper: function() {},
+                Raycaster: function() { this.setFromCamera = function() {}; this.intersectObjects = function() { return []; }; },
+                TextureLoader: function() { this.load = function() {}; },
+                PCFSoftShadowMap: 1,
+                SRGBColorSpace: 'srgb'
+            };
+        }
+    </script>
+    
+    <!-- Three.js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r168/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r168/controls/OrbitControls.js"></script>
 </head>
@@ -107,6 +158,6 @@
     <script src="js/scene.js"></script>
     <script src="js/records.js"></script>
     <script src="js/controls.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/app-simple.js"></script>
 </body>
 </html>

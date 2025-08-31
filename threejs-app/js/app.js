@@ -40,6 +40,12 @@ class DIGGGINApp {
                 return;
             }
 
+            // Check Three.js availability
+            if (!this.checkThreeJSSupport()) {
+                this.showThreeJSFallback();
+                return;
+            }
+
             // Initialize components in order
             await this.initializeComponents();
             
@@ -76,6 +82,14 @@ class DIGGGINApp {
         } catch (e) {
             return false;
         }
+    }
+
+    /**
+     * Check if Three.js is available
+     * @returns {boolean} Three.js is loaded
+     */
+    checkThreeJSSupport() {
+        return typeof THREE !== 'undefined' && THREE.Scene;
     }
 
     /**
@@ -340,10 +354,170 @@ class DIGGGINApp {
     }
 
     /**
-     * Show error message to user
-     * @param {string} message - Error message
+     * Show fallback when Three.js is not available
      */
-    showError(message) {
+    showThreeJSFallback() {
+        console.log('Three.js not available, showing fallback interface');
+        
+        // Hide loading
+        this.setLoadingState(false);
+        
+        // Show data-only interface
+        this.showDataOnlyInterface();
+    }
+
+    /**
+     * Show data-only interface when 3D is not available
+     */
+    async showDataOnlyInterface() {
+        const canvas = document.getElementById('threejs-canvas');
+        if (canvas) {
+            canvas.style.display = 'none';
+        }
+        
+        const canvasContainer = document.getElementById('canvas-container');
+        if (canvasContainer) {
+            canvasContainer.innerHTML = `
+                <div style="padding: 2rem; text-align: center; color: #fff;">
+                    <h2>🎵 DIGGGIN Record Database</h2>
+                    <p>3D features are not available, but you can still browse the record collection!</p>
+                    <div id="records-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                        <!-- Records will be inserted here -->
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Initialize data processor only
+        this.dataProcessor = new DataProcessor();
+        
+        // Load data
+        try {
+            await this.loadDataFallback();
+        } catch (error) {
+            console.error('Error loading data in fallback mode:', error);
+            this.showError('Failed to load record data.');
+        }
+    }
+
+    /**
+     * Load data for fallback interface
+     */
+    async loadDataFallback() {
+        try {
+            // Try JSON first
+            let records = [];
+            
+            try {
+                const response = await fetch(this.config.jsonPath);
+                if (response.ok) {
+                    const jsonData = await response.json();
+                    records = jsonData.records || [];
+                    console.log('✓ Loaded records from JSON:', records.length);
+                }
+            } catch (error) {
+                console.warn('JSON loading failed, falling back to CSV');
+                
+                // Fallback to CSV
+                const response = await fetch(this.config.csvPath);
+                const csvData = await response.text();
+                records = this.dataProcessor.parseCSV(csvData);
+                console.log('✓ Loaded records from CSV:', records.length);
+            }
+            
+            // Display records in grid
+            this.displayRecordsGrid(records.slice(0, 20)); // Show first 20
+            
+            // Update stats
+            const totalElement = document.getElementById('total-records');
+            const filteredElement = document.getElementById('filtered-records');
+            
+            if (totalElement) totalElement.textContent = records.length;
+            if (filteredElement) filteredElement.textContent = Math.min(20, records.length);
+            
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
+     * Display records in a 2D grid
+     * @param {Array} records - Records to display
+     */
+    displayRecordsGrid(records) {
+        const grid = document.getElementById('records-grid');
+        if (!grid) return;
+        
+        grid.innerHTML = records.map(record => `
+            <div class="record-card" style="
+                background: rgba(255,255,255,0.1);
+                border-radius: 8px;
+                padding: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            " onclick="window.showRecordDetails && window.showRecordDetails(${JSON.stringify(record).replace(/"/g, '&quot;')})">
+                <img src="${record.cover}" alt="${record.artworkName}" style="
+                    width: 100%;
+                    height: 150px;
+                    object-fit: cover;
+                    border-radius: 4px;
+                    margin-bottom: 0.5rem;
+                " onerror="this.style.display='none'">
+                <h4 style="margin: 0.5rem 0; color: #fff; font-size: 0.9rem;">${record.songTitle}</h4>
+                <p style="margin: 0; color: #ccc; font-size: 0.8rem;">${record.artist}</p>
+                <p style="margin: 0.25rem 0 0 0; color: #999; font-size: 0.7rem;">${record.genre}</p>
+            </div>
+        `).join('');
+        
+        // Add hover effects
+        const style = document.createElement('style');
+        style.textContent = `
+            .record-card:hover {
+                background: rgba(255,255,255,0.2) !important;
+                transform: translateY(-2px);
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Global function for record details
+        window.showRecordDetails = (record) => {
+            const detailsElement = document.getElementById('record-details');
+            if (detailsElement) {
+                detailsElement.innerHTML = `
+                    <h3>Record Details</h3>
+                    <div class="record-info">
+                        <img src="${record.cover}" alt="${record.artworkName}" class="record-cover" 
+                             onerror="this.style.display='none'">
+                        
+                        <div class="record-field">
+                            <label>Artwork:</label>
+                            <span class="value">${record.artworkName || record.artwork_name || 'Unknown'}</span>
+                        </div>
+                        
+                        <div class="record-field">
+                            <label>Artist:</label>
+                            <span class="value">${record.artist}</span>
+                        </div>
+                        
+                        <div class="record-field">
+                            <label>Song:</label>
+                            <span class="value">${record.songTitle || record.song_title || 'Unknown'}</span>
+                        </div>
+                        
+                        <div class="record-field">
+                            <label>Genre:</label>
+                            <span class="value">${record.genre}</span>
+                        </div>
+                        
+                        <div class="record-field">
+                            <label>Mood:</label>
+                            <span class="value">${record.mood}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        };
+    }
         console.error('User error:', message);
         
         // Create or update error display
