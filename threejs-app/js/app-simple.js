@@ -134,6 +134,7 @@ class DIGGGINApp {
         
         // Initialize data processor only
         this.dataProcessor = new DataProcessor();
+        this.filterManager = new SimpleFilterManager(this);
         
         // Load data
         await this.loadDataFallback();
@@ -211,6 +212,9 @@ class DIGGGINApp {
             
             // Display records in grid
             this.displayRecordsGrid(records.slice(0, 30)); // Show first 30
+            
+            // Set up filtering
+            this.filterManager.setRecords(records);
             
             // Update stats
             this.updateStats(records.length, Math.min(30, records.length));
