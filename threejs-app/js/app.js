@@ -17,9 +17,11 @@ class DIGGGINApp {
         // Configuration
         this.config = {
             csvPath: '../DiggerDB.csv',
+            jsonPath: 'data/sample-records.json',
             maxRecords: 100,
             enableCache: true,
-            enableAnalytics: false
+            enableAnalytics: false,
+            preferJSON: true // Try JSON first, fallback to CSV
         };
         
         this.init();
@@ -135,7 +137,30 @@ class DIGGGINApp {
         this.setLoadingState(true);
         
         try {
-            // Fetch CSV data
+            let data = null;
+            
+            // Try JSON first if preferred
+            if (this.config.preferJSON) {
+                try {
+                    console.log('Attempting to load pre-processed JSON data...');
+                    const response = await fetch(this.config.jsonPath);
+                    if (response.ok) {
+                        const jsonData = await response.json();
+                        console.log('✓ JSON data loaded');
+                        
+                        // Load records directly from JSON
+                        await this.recordManager.loadRecordsFromJSON(jsonData);
+                        console.log('✓ Records loaded from JSON');
+                        this.updateInitialUI();
+                        return;
+                    }
+                } catch (error) {
+                    console.warn('JSON loading failed, falling back to CSV:', error.message);
+                }
+            }
+            
+            // Fallback to CSV processing
+            console.log('Loading CSV data...');
             const response = await fetch(this.config.csvPath);
             if (!response.ok) {
                 throw new Error(`Failed to fetch data: ${response.status}`);

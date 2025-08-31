@@ -172,10 +172,15 @@ class DataProcessor {
      */
     filterRecords(filters = {}) {
         return this.records.filter(record => {
-            // Text search
+            // Text search - handle both searchTerms field and manual search
             if (filters.search) {
                 const searchTerm = filters.search.toLowerCase();
-                if (!record.searchTerms.includes(searchTerm)) {
+                const searchableText = record.searchTerms || 
+                    [record.artworkName, record.genre, record.artist, record.songTitle, 
+                     record.artisticCategory, record.mood, 
+                     ...(record.colors || []), ...(record.collections || [])].join(' ').toLowerCase();
+                
+                if (!searchableText.includes(searchTerm)) {
                     return false;
                 }
             }
@@ -196,7 +201,7 @@ class DataProcessor {
             }
 
             // Collection filter
-            if (filters.collection && !record.collections.includes(filters.collection)) {
+            if (filters.collection && !(record.collections || []).includes(filters.collection)) {
                 return false;
             }
 

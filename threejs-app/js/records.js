@@ -10,6 +10,7 @@ class RecordManager {
         this.displayedRecords = [];
         this.currentFilters = {};
         this.maxDisplayRecords = 100; // Limit for performance
+        this.precomputedFilterOptions = null; // For JSON data
         
         // State
         this.isLoading = false;
@@ -44,6 +45,42 @@ class RecordManager {
         } catch (error) {
             console.error('Error loading records:', error);
             this.showError('Failed to load records. Please try again.');
+        } finally {
+            this.setLoading(false);
+        }
+    }
+
+    /**
+     * Load and display records from pre-processed JSON data
+     * @param {Object} jsonData - Pre-processed JSON data
+     */
+    async loadRecordsFromJSON(jsonData) {
+        this.setLoading(true);
+        
+        try {
+            // Use records directly from JSON
+            this.currentRecords = jsonData.records || [];
+            console.log('Loaded records from JSON:', this.currentRecords.length);
+            
+            // Use pre-computed filter options if available
+            if (jsonData.filterOptions) {
+                this.precomputedFilterOptions = jsonData.filterOptions;
+            }
+            
+            // Get initial set of records to display
+            this.displayedRecords = this.getRecordsToDisplay();
+            
+            // Position records in 3D scene
+            this.scene.positionRecords(this.displayedRecords);
+            
+            // Update UI
+            this.updateStats();
+            this.populateFilterOptions();
+            
+            console.log('Records loaded from JSON and positioned successfully');
+        } catch (error) {
+            console.error('Error loading records from JSON:', error);
+            this.showError('Failed to load records from JSON. Please try again.');
         } finally {
             this.setLoading(false);
         }
@@ -279,7 +316,14 @@ class RecordManager {
      * Populate filter dropdown options
      */
     populateFilterOptions() {
-        const filterOptions = this.data.getFilterOptions();
+        let filterOptions;
+        
+        // Use precomputed options if available (from JSON), otherwise compute from data
+        if (this.precomputedFilterOptions) {
+            filterOptions = this.precomputedFilterOptions;
+        } else {
+            filterOptions = this.data.getFilterOptions();
+        }
         
         // Update genre filter
         const genreSelect = document.getElementById('genre-filter');
