@@ -13,8 +13,9 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Allow only one concurrent deployment, skipping runs queued between the 
+# run in-progress and latest queued. However, do NOT cancel in-progress 
+# runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -41,7 +42,8 @@ jobs:
         run: bundle install
 
       - name: Build with Jekyll
-        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        run: |
+          bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
 
