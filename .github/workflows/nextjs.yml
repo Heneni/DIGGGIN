@@ -1,0 +1,106 @@
+name: Deploy Next.js site to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  # Allow manual trigger
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the 
+# run in-progress and latest queued. However, do NOT cancel in-progress 
+# runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate artworks data
+        run: |
+          node -e "
+          const fs = require('fs');
+          const Papa = require('papaparse');
+          
+          const csvContent = fs.readFileSync('DiggerDB.csv', 'utf-8');
+          const results = Papa.parse(csvContent, {
+            header: true,
+            skipEmptyLines: true,
+            transformHeader: (header) => {
+              const headerMap = {
+                'cover': 'cover',
+                'artwork name': 'artworkName',
+                'song genre': 'songGenre', 
+                'artist': 'artist',
+                'song title': 'songTitle',
+                'artistic category': 'artisticCategory',
+                'mood': 'mood',
+                'year': 'year',
+                'collections': 'collections'
+              };
+              return headerMap[header.toLowerCase()] || header;
+            }
+          });
+          
+          const artworks = results.data
+            .filter(item => item.cover && item.artworkName)
+            .map(item => ({
+              cover: item.cover || '',
+              artworkName: item.artworkName || '',
+              songGenre: item.songGenre || '',
+              artist: item.artist || '',
+              songTitle: item.songTitle || '',
+              artisticCategory: item.artisticCategory || '',
+              mood: item.mood || '',
+              year: item.year || '',
+              collections: item.collections || ''
+            }));
+          
+          fs.writeFileSync('public/artworks.json', JSON.stringify(artworks, null, 2));
+          console.log('Generated artworks.json with', artworks.length, 'artworks');
+          "
+
+      - name: Build with Next.js
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
