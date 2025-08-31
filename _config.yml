@@ -1,0 +1,19 @@
+title: DIGGGIN
+description: DISCDIGGER
+baseurl: ""
+url: "https://heneni.github.io/DIGGGIN"
+
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+plugins:
+  - jekyll-feed
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git
+  - DiggerDB.csv
