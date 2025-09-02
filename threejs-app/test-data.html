@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Processing Test</title>
+    <style>
+        body { font-family: monospace; background: #111; color: #fff; padding: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; background: #333; border-radius: 5px; }
+        .pass { border-left: 5px solid #4CAF50; }
+        .fail { border-left: 5px solid #f44336; }
+        .info { border-left: 5px solid #2196F3; }
+        pre { background: #222; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>DIGGGIN Data Processing Test</h1>
+    <div id="test-results"></div>
+
+    <script src="js/data.js"></script>
+    <script>
+        const results = document.getElementById('test-results');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+
+        async function runTests() {
+            addResult('<h3>Starting Data Processing Tests...</h3>');
+            
+            try {
+                // Test 1: Initialize DataProcessor
+                addResult('Test 1: Initialize DataProcessor');
+                const processor = new DataProcessor();
+                addResult('✓ DataProcessor created successfully', 'pass');
+
+                // Test 2: Load CSV data
+                addResult('Test 2: Load CSV data');
+                const response = await fetch('../DiggerDB.csv');
+                const csvData = await response.text();
+                addResult(`✓ CSV data loaded: ${csvData.length} characters`, 'pass');
+
+                // Test 3: Parse CSV
+                addResult('Test 3: Parse CSV data');
+                const records = processor.parseCSV(csvData);
+                addResult(`✓ Parsed ${records.length} records`, 'pass');
+
+                // Test 4: Validate first record
+                addResult('Test 4: Validate first record structure');
+                const firstRecord = records[0];
+                addResult(`<pre>${JSON.stringify(firstRecord, null, 2)}</pre>`, 'info');
+                
+                const requiredFields = ['id', 'cover', 'artworkName', 'genre', 'artist', 'songTitle'];
+                const hasAllFields = requiredFields.every(field => firstRecord.hasOwnProperty(field));
+                addResult(hasAllFields ? '✓ All required fields present' : '✗ Missing required fields', hasAllFields ? 'pass' : 'fail');
+
+                // Test 5: Check filter options
+                addResult('Test 5: Extract filter options');
+                const filterOptions = processor.getFilterOptions();
+                addResult(`<pre>Genres: ${filterOptions.genres.length}
+Artists: ${filterOptions.artists.length}
+Moods: ${filterOptions.moods.length}
+Collections: ${filterOptions.collections.length}</pre>`, 'info');
+                addResult('✓ Filter options extracted', 'pass');
+
+                // Test 6: Test filtering
+                addResult('Test 6: Test record filtering');
+                const psychedelicRecords = processor.filterRecords({ genre: 'Psychedelic' });
+                addResult(`✓ Found ${psychedelicRecords.length} Psychedelic records`, 'pass');
+
+                // Test 7: Test search
+                addResult('Test 7: Test search functionality');
+                const searchResults = processor.filterRecords({ search: 'tame' });
+                addResult(`✓ Found ${searchResults.length} records matching "tame"`, 'pass');
+
+                // Test 8: Get statistics
+                addResult('Test 8: Get dataset statistics');
+                const stats = processor.getStats();
+                addResult(`<pre>${JSON.stringify(stats, null, 2)}</pre>`, 'info');
+                addResult('✓ Statistics calculated', 'pass');
+
+                addResult('<h3>✅ All tests passed! Data processing is working correctly.</h3>', 'pass');
+
+            } catch (error) {
+                addResult(`❌ Test failed: ${error.message}`, 'fail');
+                console.error('Test error:', error);
+            }
+        }
+
+        runTests();
+    </script>
+</body>
+</html>

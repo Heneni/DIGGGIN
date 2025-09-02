@@ -1,0 +1,144 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "generatedAt": "2024-08-31T14:30:00.000Z",
+    "totalSize": 12345,
+    "dataQuality": {
+      "completeness": 95,
+      "imagesAvailable": 98,
+      "colorsSpecified": 85,
+      "collectionsTagged": 92
+    },
+    "processingInfo": {
+      "timestamp": "2024-08-31T14:30:00.000Z",
+      "processor": "DIGGGIN DataConverter v1.0.0",
+      "source": "DiggerDB.csv"
+    }
+  },
+  "records": [
+    {
+      "id": 1,
+      "cover": "https://storage.googleapis.com/workthisfucker/ALLLRC/LRC0303241133.jpeg",
+      "artworkName": "Dreamscape Symphony",
+      "genre": "Psychedelic",
+      "artist": "Tame Impala",
+      "songTitle": "Echoes of Serenity",
+      "artisticCategory": "Abstract",
+      "mood": "Calming",
+      "colors": ["pink", "green", "blue", "cool tone"],
+      "collections": ["trippy", "boho", "hipstoric", "contemporary", "spring"],
+      "searchTerms": "dreamscape symphony psychedelic tame impala echoes of serenity abstract calming pink green blue cool tone trippy boho hipstoric contemporary spring",
+      "displayTitle": "Echoes of Serenity by Tame Impala",
+      "primaryColor": "blue",
+      "tags": ["trippy", "boho", "hipstoric", "contemporary", "spring", "Psychedelic", "Calming"],
+      "genreIndex": 0,
+      "moodIndex": 1
+    },
+    {
+      "id": 2,
+      "cover": "https://storage.googleapis.com/workthisfucker/ALLLRC/LRC90023.jpeg",
+      "artworkName": "Veil of Luminescence",
+      "genre": "Psychedelic",
+      "artist": "Radiohead",
+      "songTitle": "Shadow's Edge",
+      "artisticCategory": "abstract",
+      "mood": "lonely",
+      "colors": ["dark", "green", "black and white", "warm"],
+      "collections": ["trippy", "contemporary", "stoner"],
+      "searchTerms": "veil of luminescence psychedelic radiohead shadow's edge abstract lonely dark green black and white warm trippy contemporary stoner",
+      "displayTitle": "Shadow's Edge by Radiohead",
+      "primaryColor": "green",
+      "tags": ["trippy", "contemporary", "stoner", "Psychedelic", "lonely"],
+      "genreIndex": 0,
+      "moodIndex": 0
+    },
+    {
+      "id": 3,
+      "cover": "https://storage.googleapis.com/workthisfucker/ALLLRC/LRCSource364.jpg",
+      "artworkName": "City Mashup Dreams",
+      "genre": "Indie",
+      "artist": "Glass Animals",
+      "songTitle": "Heat Waves",
+      "artisticCategory": "surreal",
+      "mood": "euphoric",
+      "colors": ["vibrant", "colorful"],
+      "collections": ["contemporary", "graffiti", "trippy"],
+      "searchTerms": "city mashup dreams indie glass animals heat waves surreal euphoric vibrant colorful contemporary graffiti trippy",
+      "displayTitle": "Heat Waves by Glass Animals",
+      "primaryColor": "neutral",
+      "tags": ["contemporary", "graffiti", "trippy", "Indie", "euphoric"],
+      "genreIndex": 1,
+      "moodIndex": 0
+    },
+    {
+      "id": 4,
+      "cover": "https://storage.googleapis.com/workthisfucker/ProcreateFiles/PFBruinsR18.JPG",
+      "artworkName": "Dynamic Athlete 53",
+      "genre": "Indie",
+      "artist": "Imagine Dragons",
+      "songTitle": "Vortex of Motion",
+      "artisticCategory": "Abstract",
+      "mood": "Euphoric",
+      "colors": ["Vibrant"],
+      "collections": ["Contemporary", "graffiti", "trippy"],
+      "searchTerms": "dynamic athlete 53 indie imagine dragons vortex of motion abstract euphoric vibrant contemporary graffiti trippy",
+      "displayTitle": "Vortex of Motion by Imagine Dragons",
+      "primaryColor": "neutral",
+      "tags": ["Contemporary", "graffiti", "trippy", "Indie", "Euphoric"],
+      "genreIndex": 1,
+      "moodIndex": 0
+    },
+    {
+      "id": 5,
+      "cover": "https://storage.googleapis.com/workthisfucker/ProcreateFiles/PFBruinsZ19.jpeg",
+      "artworkName": "Chaotic Vision",
+      "genre": "Alternative Rock",
+      "artist": "Radiohead",
+      "songTitle": "Painted Red",
+      "artisticCategory": "abstract",
+      "mood": "rebellious",
+      "colors": ["red", "blue", "black", "white"],
+      "collections": ["graffiti", "contemporary", "trippy"],
+      "searchTerms": "chaotic vision alternative rock radiohead painted red abstract rebellious red blue black white graffiti contemporary trippy",
+      "displayTitle": "Painted Red by Radiohead",
+      "primaryColor": "red",
+      "tags": ["graffiti", "contemporary", "trippy", "Alternative Rock", "rebellious"],
+      "genreIndex": 2,
+      "moodIndex": 3
+    }
+  ],
+  "filterOptions": {
+    "genres": ["Psychedelic", "Indie", "Alternative Rock", "Hip Hop"],
+    "artists": ["Tame Impala", "Radiohead", "Glass Animals", "Imagine Dragons"],
+    "moods": ["Calming", "lonely", "euphoric", "Euphoric", "rebellious"],
+    "collections": ["trippy", "boho", "hipstoric", "contemporary", "spring", "stoner", "graffiti"]
+  },
+  "statistics": {
+    "totalRecords": 5,
+    "genres": 3,
+    "artists": 4,
+    "moods": 4,
+    "collections": 7,
+    "validRecords": 5,
+    "breakdown": {
+      "genres": {
+        "Psychedelic": 2,
+        "Indie": 2,
+        "Alternative Rock": 1
+      },
+      "moods": {
+        "euphoric": 1,
+        "Euphoric": 1,
+        "Calming": 1,
+        "lonely": 1,
+        "rebellious": 1
+      }
+    },
+    "topArtists": [
+      {"artist": "Radiohead", "count": 2},
+      {"artist": "Tame Impala", "count": 1},
+      {"artist": "Glass Animals", "count": 1},
+      {"artist": "Imagine Dragons", "count": 1}
+    ]
+  }
+}
